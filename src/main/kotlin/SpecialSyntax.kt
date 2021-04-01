@@ -373,6 +373,7 @@ fun functionsTest(){
     val func = operation()                                          // 3
     println(func(2))                                                // 4
     lambdaFunctionTest()
+    extendFunctionTest()
 }
 
 fun lambdaFunctionTest(){
@@ -401,5 +402,10 @@ fun extendFunctionTest(){
     println("Max priced item name: ${order.maxPricedItemName()}")                           // 4
     println("Max priced item value: ${order.maxPricedItemValue()}")
     println("Items: ${order.commaDelimitedItemNames}")                                      // 5
+    println(null.nullSafeToString())
+    println("Kotlin".nullSafeToString())
 }
+
+fun <T> T?.nullSafeToString() = this?.toString() ?: "NULL"  // 1
+
 
