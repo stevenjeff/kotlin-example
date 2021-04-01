@@ -37,6 +37,8 @@ fun main() {
     mapCollectionList()
     filterTest()
     mapFunctionTest()
+    anyTest()
+    allTest()
 }
 
 fun log(vararg entries: String) {
@@ -489,5 +491,23 @@ fun mapFunctionTest(){
     val numbers = listOf(1, -2, 3, -4, 5, -6)     // 1
     val doubled = numbers.map { x -> x * 2 }      // 2
     val tripled = numbers.map { it * 3 }          // 3
+}
+
+fun anyTest(){
+    val numbers = listOf(1, -2, 3, -4, 5, -6)            // 1
+    val anyNegative = numbers.any { it < 0 }             // 2
+    val anyGT6 = numbers.any { it > 6 }                  // 3
+    println("Numbers: $numbers")
+    println("Is there any number less than 0: $anyNegative")
+    println("Is there any number greater than 6: $anyGT6")
+}
+
+fun allTest(){
+    val numbers = listOf(1, -2, 3, -4, 5, -6)            // 1
+    val allEven = numbers.all { it % 2 == 0 }            // 2
+    val allLess6 = numbers.all { it < 6 }                // 3
+    println("Numbers: $numbers")
+    println("All numbers are even: $allEven")
+    println("All numbers are less than 6: $allLess6")
 }
 
