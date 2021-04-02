@@ -40,6 +40,7 @@ fun main() {
     anyTest()
     allTest()
     noneTest()
+    findTest()
 }
 
 fun log(vararg entries: String) {
@@ -519,5 +520,12 @@ fun noneTest(){
     println("Numbers: $numbers")
     println("All numbers are even: $allEven")
     println("No element greater than 6: $allLess6")
+}
+
+fun findTest(){
+    val words = listOf("Lets", "find", "something", "in", "collection", "somehow")  // 1
+    val first = words.find { it.startsWith("some") }                                // 2
+    val last = words.findLast { it.startsWith("some") }                             // 3
+    val nothing = words.find { it.contains("nothing") }                             // 4
 }
 
