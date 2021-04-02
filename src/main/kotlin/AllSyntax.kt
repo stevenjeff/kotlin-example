@@ -1,5 +1,6 @@
 import java.lang.Math.abs
 import java.util.*
+import kotlin.reflect.KProperty
 
 /**
  * @projectName kotlinApplication
@@ -57,6 +58,11 @@ fun main() {
     with_Test()
     applyFunctionTest()
     alsoTest()
+    delegationPatternTest()
+    delegatePropertyTest()
+    lazySampleTest()
+    mapPropertiesTest()
+    namedArgumentsTest()
 }
 
 fun log(vararg entries: String) {
@@ -741,4 +747,90 @@ fun alsoTest(){
         .also {                                          // 2
             writeCreationLog(it)                         // 3
         }
+}
+
+interface SoundBehavior {                                                          // 1
+    fun makeSound()
+}
+
+class ScreamBehavior(val n:String): SoundBehavior {                                // 2
+    override fun makeSound() = println("${n.toUpperCase()} !!!")
+}
+
+class RockAndRollBehavior(val n:String): SoundBehavior {                           // 2
+    override fun makeSound() = println("I'm The King of Rock 'N' Roll: $n")
+}
+
+// Tom Araya is the "singer" of Slayer
+class TomAraya(n:String): SoundBehavior by ScreamBehavior(n)                       // 3
+
+// You should know ;)
+class ElvisPresley(n:String): SoundBehavior by RockAndRollBehavior(n)              // 3
+
+fun delegationPatternTest(){
+    val tomAraya = TomAraya("Thrash Metal")
+    tomAraya.makeSound()                                                           // 4
+    val elvisPresley = ElvisPresley("Dancin' to the Jailhouse Rock.")
+    elvisPresley.makeSound()
+}
+
+class Example {
+    var p: String by Delegate()                                               // 1
+
+    override fun toString() = "Example Class"
+}
+
+class Delegate() {
+    operator fun getValue(thisRef: Any?, prop: KProperty<*>): String {        // 2
+        return "$thisRef, thank you for delegating '${prop.name}' to me!"
+    }
+
+    operator fun setValue(thisRef: Any?, prop: KProperty<*>, value: String) { // 2
+        println("$value has been assigned to ${prop.name} in $thisRef")
+    }
+}
+
+fun delegatePropertyTest(){
+    val e = Example()
+    println(e.p)
+    e.p = "NEW"
+}
+
+class LazySample {
+    init {
+        println("created!")            // 1
+    }
+
+    val lazyStr: String by lazy {
+        println("computed!")          // 2
+        "my lazy"
+    }
+}
+
+fun lazySampleTest(){
+    val sample = LazySample()         // 1
+    println("lazyStr = ${sample.lazyStr}")  // 2
+    println(" = ${sample.lazyStr}")  // 3
+}
+
+class Customer(val map: Map<String, Any?>) {
+    val name: String by map                // 1
+    val age: Int     by map                // 1
+}
+
+fun mapPropertiesTest(){
+    val customer = Customer(mapOf(
+        "name" to "John Doe",
+        "age"  to 25
+    ))
+    println("name = ${customer.name}, age = ${customer.age}")
+}
+
+fun format(userName: String, domain: String) = "$userName@$domain"
+
+fun namedArgumentsTest(){
+    println(format("mario", "example.com"))                         // 1
+    println(format("domain.com", "username"))                       // 2
+    println(format(userName = "foo", domain = "bar.com"))           // 3
+    println(format(domain = "frog.com", userName = "pepe"))         // 4
 }
