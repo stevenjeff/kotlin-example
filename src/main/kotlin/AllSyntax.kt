@@ -41,6 +41,10 @@ fun main() {
     allTest()
     noneTest()
     findTest()
+    firstOrNullAndLastOrNullTest()
+    countTest()
+    groupByAssociateBy()
+    partitionTest()
 }
 
 fun log(vararg entries: String) {
@@ -529,3 +533,53 @@ fun findTest(){
     val nothing = words.find { it.contains("nothing") }                             // 4
 }
 
+fun firstOrNullAndLastOrNullTest(){
+    val words = listOf("foo", "bar", "baz", "faz")         // 1
+    val empty = emptyList<String>()                        // 2
+    val first = empty.firstOrNull()                        // 3
+    val last = empty.lastOrNull()                          // 4
+    val firstF = words.firstOrNull { it.startsWith('f') }  // 5
+    val firstZ = words.firstOrNull { it.startsWith('z') }  // 6
+    val lastF = words.lastOrNull { it.endsWith('f') }      // 7
+    val lastZ = words.lastOrNull { it.endsWith('z') }      // 8
+    println("First $first, last $last")
+    println("First starts with 'f' is $firstF, last starts with 'z' is $firstZ")
+    println("First ends with 'f' is $lastF, last ends with 'z' is $lastZ")
+}
+
+fun countTest(){
+    val numbers = listOf(1, -2, 3, -4, 5, -6)            // 1
+    val totalCount = numbers.count()                     // 2
+    val evenCount = numbers.count { it % 2 == 0 }        // 3
+    println("Total number of elements: $totalCount")
+    println("Number of even elements: $evenCount")
+}
+
+fun groupByAssociateBy(){
+    data class Person(val name: String, val city: String, val phone: String) // 1
+    val people = listOf(                                                     // 2
+        Person("John", "Boston", "+1-888-123456"),
+        Person("Sarah", "Munich", "+49-777-789123"),
+        Person("Svyatoslav", "Saint-Petersburg", "+7-999-456789"),
+        Person("Vasilisa", "Saint-Petersburg", "+7-999-123456"))
+    val phoneBook = people.associateBy { it.phone }                          // 3
+    val cityBook = people.associateBy(Person::phone, Person::city)           // 4
+    val peopleCities = people.groupBy(Person::city, Person::name)            // 5
+    val lastPersonCity = people.associateBy(Person::city, Person::name)      // 6
+    println("People: $people")
+    println("Phone book: $phoneBook")
+    println("City book: $cityBook")
+    println("People living in each city: $peopleCities")
+    println("Last person living in each city: $lastPersonCity")
+}
+
+fun partitionTest(){
+    val numbers = listOf(1, -2, 3, -4, 5, -6)                // 1
+    val evenOdd = numbers.partition { it % 2 == 0 }           // 2
+    val (positives, negatives) = numbers.partition { it > 0 } // 3
+    println("Numbers: $numbers")
+    println("Even numbers: ${evenOdd.first}")
+    println("Odd numbers: ${evenOdd.second}")
+    println("Positive numbers: $positives")
+    println("Negative numbers: $negatives")
+}
