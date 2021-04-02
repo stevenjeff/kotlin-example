@@ -53,6 +53,7 @@ fun main() {
     zipFunctionTest()
     getOrElseTest()
     letTest()
+    runTest()
 }
 
 fun log(vararg entries: String) {
