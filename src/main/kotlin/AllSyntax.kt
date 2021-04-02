@@ -1,3 +1,4 @@
+import java.lang.Math.abs
 import java.util.*
 
 /**
@@ -45,6 +46,13 @@ fun main() {
     countTest()
     groupByAssociateBy()
     partitionTest()
+    flatMapTest()
+    minOrNullMaxOrNullTest()
+    sortedTest()
+    mapCollectionTest()
+    zipFunctionTest()
+    getOrElseTest()
+    letTest()
 }
 
 fun log(vararg entries: String) {
@@ -582,4 +590,115 @@ fun partitionTest(){
     println("Odd numbers: ${evenOdd.second}")
     println("Positive numbers: $positives")
     println("Negative numbers: $negatives")
+}
+
+fun flatMapTest(){
+    val fruitsBag = listOf("apple","orange","banana","grapes")  // 1
+    val clothesBag = listOf("shirts","pants","jeans")           // 2
+    val cart = listOf(fruitsBag, clothesBag)                    // 3
+    val mapBag = cart.map { it }                                // 4
+    val flatMapBag = cart.flatMap { it }                        // 5
+
+    println("Your bags are: $mapBag")
+    println("The things you bought are: $flatMapBag")
+}
+
+fun minOrNullMaxOrNullTest(){
+    val numbers = listOf(1, 2, 3)
+    val empty = emptyList<Int>()
+    val only = listOf(3)
+    println("Numbers: $numbers, min = ${numbers.minOrNull()} max = ${numbers.maxOrNull()}") // 1
+    println("Empty: $empty, min = ${empty.minOrNull()}, max = ${empty.maxOrNull()}")        // 2
+    println("Only: $only, min = ${only.minOrNull()}, max = ${only.maxOrNull()}")            // 3
+}
+
+fun sortedTest(){
+    val shuffled = listOf(5, 4, 2, 1, 3, -10)                   // 1
+    val natural = shuffled.sorted()                             // 2
+    val inverted = shuffled.sortedBy { -it }                    // 3
+    val descending = shuffled.sortedDescending()                // 4
+    val descendingBy = shuffled.sortedByDescending { abs(it)  } // 5
+    println("Shuffled: $shuffled")
+    println("Natural order: $natural")
+    println("Inverted natural order: $inverted")
+    println("Inverted natural order value: $descending")
+    println("Inverted natural order of absolute values: $descendingBy")
+}
+
+fun mapCollectionTest(){
+    val map = mapOf("key" to 42)
+    val value1 = map["key"]                                     // 1
+    val value2 = map["key2"]                                    // 2
+    val value3: Int = map.getValue("key")                       // 1
+    val mapWithDefault = map.withDefault { k -> k.length }
+    val value4 = mapWithDefault.getValue("key2")                // 3
+    try {
+        map.getValue("anotherKey")                              // 4
+    } catch (e: NoSuchElementException) {
+        println("Message: $e")
+    }
+    println("value1 is $value1")
+    println("value2 is $value2")
+    println("value3 is $value3")
+    println("value4 is $value4")
+}
+
+fun zipFunctionTest(){
+    val A = listOf("a", "b", "c","d")                  // 1
+    val B = listOf(1, 2, 3, 4,5)// 1
+    val resultPairs = A zip B                      // 2
+    val resultReduce = A.zip(B) { a, b -> "$a$b" } // 3
+    println("A to B: $resultPairs")
+    println("\$A\$B: $resultReduce")
+}
+
+fun getOrElseTest(){
+    val list = listOf(0, 10, 20)
+    println(list.getOrElse(1) { 42 })    // 1
+    println(list.getOrElse(10) { 42 })   // 2
+
+    val map = mutableMapOf<String, Int?>()
+    println(map.getOrElse("x") { 1 })       // 1
+
+    map["x"] = 3
+    println(map.getOrElse("x") { 1 })       // 2
+
+    map["x"] = null
+    println(map.getOrElse("x") { 1 })       // 3
+}
+
+fun customPrint(s: String) {
+    print(s.toUpperCase())
+}
+
+fun letTest(){
+    val empty = "test".let {               // 1
+        customPrint(it)                    // 2
+        it.isEmpty()                       // 3
+    }
+    println(" is empty: $empty")
+    fun printNonNull(str: String?) {
+        println("Printing \"$str\":")
+        str?.let {                         // 4
+            print("\t")
+            customPrint(it)
+            println()
+        }
+    }
+    printNonNull(null)
+    printNonNull("my string")
+}
+
+fun runTest(){
+    fun getNullableLength(ns: String?) {
+        println("for \"$ns\":")
+        ns?.run {                                                  // 1
+            println("\tis empty? " + this.isEmpty())                    // 2
+            println("\tlength = $length")
+            length                                                 // 3
+        }
+    }
+    getNullableLength(null)
+    getNullableLength("")
+    getNullableLength("some string with Kotlin")
 }
