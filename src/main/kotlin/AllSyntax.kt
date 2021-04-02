@@ -54,6 +54,9 @@ fun main() {
     getOrElseTest()
     letTest()
     runTest()
+    with_Test()
+    applyFunctionTest()
+    alsoTest()
 }
 
 fun log(vararg entries: String) {
@@ -702,4 +705,40 @@ fun runTest(){
     getNullableLength(null)
     getNullableLength("")
     getNullableLength("some string with Kotlin")
+}
+
+class Configuration(var host: String, var port: Int)
+
+fun with_Test(){
+    val configuration = Configuration(host = "127.0.0.1", port = 9000)
+    with(configuration) {
+        println("$host:$port")
+    }
+    // instead of:
+    println("${configuration.host}:${configuration.port}")
+}
+
+data class Child(var name: String, var age: Int, var about: String) {
+    constructor() : this("", 0, "")
+}
+
+fun applyFunctionTest(){
+    val jake = Child()                                     // 1
+    val stringDescription = jake.apply {                    // 2
+        name = "Jake"                                       // 3
+        age = 30
+        about = "Android developer"
+    }.toString()                                            // 4
+    println(stringDescription)
+}
+
+fun writeCreationLog(p: Child) {
+    println("A new person ${p.name} was created.")
+}
+
+fun alsoTest(){
+    val jake = Child("Jake", 30, "Android developer")   // 1
+        .also {                                          // 2
+            writeCreationLog(it)                         // 3
+        }
 }
