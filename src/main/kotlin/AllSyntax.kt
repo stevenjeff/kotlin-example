@@ -1,4 +1,6 @@
 import java.lang.Math.abs
+import java.time.LocalDate
+import java.time.chrono.ChronoLocalDate
 import java.util.*
 import kotlin.reflect.KProperty
 
@@ -63,6 +65,9 @@ fun main() {
     lazySampleTest()
     mapPropertiesTest()
     namedArgumentsTest()
+    stringTemplateTest()
+    destructDeclareTest()
+    smartTest()
 }
 
 fun log(vararg entries: String) {
@@ -833,4 +838,63 @@ fun namedArgumentsTest(){
     println(format("domain.com", "username"))                       // 2
     println(format(userName = "foo", domain = "bar.com"))           // 3
     println(format(domain = "frog.com", userName = "pepe"))         // 4
+}
+
+fun stringTemplateTest(){
+    val greeting = "Kotliner"
+    println("Hello $greeting")                  // 1
+    println("Hello ${greeting.toUpperCase()}")  // 2
+}
+
+fun findMinMax(list: List<Int>): Pair<Int, Int> {
+    // do the math
+    return Pair(50, 100)
+}
+
+data class Parent(val username: String, val email: String)    // 1
+
+fun getUser() = Parent("Mary", "mary@somewhere.com")
+
+class Pair<K, V>(val first: K, val second: V) {  // 1
+    operator fun component1(): K {
+        return first
+    }
+
+    operator fun component2(): V {
+        return second
+    }
+}
+
+fun destructDeclareTest(){
+    val (x, y, z) = arrayOf(5, 10, 15)                              // 1
+    val map = mapOf("Alice" to 21, "Bob" to 25)
+    for ((name, age) in map) {                                      // 2
+        println("$name is $age years old")
+    }
+    val (min, max) = findMinMax(listOf(100, 90, 50, 98, 76, 83))    // 3
+    val user = getUser()
+    val (username, email) = user                            // 2
+    println(username == user.component1())                  // 3
+
+    val (_, emailAddress) = getUser()                       // 4
+    val (num, name) = Pair(1, "one")             // 2
+
+    println("num = $num, name = $name")
+}
+
+fun smartTest(){
+    val date: ChronoLocalDate? = LocalDate.now()    // 1
+    if (date != null) {
+        println(date.isLeapYear)                    // 2
+    }
+    if (date != null && date.isLeapYear) {          // 3
+        println("It's a leap year!")
+    }
+    if (date == null || !date.isLeapYear) {         // 4
+        println("There's no Feb 29 this year...")
+    }
+    if (date is LocalDate) {
+        val month = date.monthValue                 // 5
+        println(month)
+    }
 }
